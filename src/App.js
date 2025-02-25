@@ -3,9 +3,19 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState, useEffect } from "react";
 function App() {
-  const [zadania, ustawZadanie] = useState([]);
+const loadTaskFromLocalStorage = () => {
+    const savedTasks = localStorage.getItem("zadania");
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  }
+
+  const [zadania, ustawZadanie] = useState(loadTaskFromLocalStorage());
   const [noweZadanie, dodajNoweZadanie] = useState("");
- 
+  useEffect(() => {saveTasksToLocalStroage(zadania);}, [zadania]);
+
+  const saveTasksToLocalStroage = (zadania) => {
+    localStorage.setItem("zadania", JSON.stringify(zadania));
+  }
+  
   const dodajZadanie = () => {
     if (noweZadanie.trim() === "") return;
     ustawZadanie([...zadania, { id: Date.now(), text: noweZadanie }]);
